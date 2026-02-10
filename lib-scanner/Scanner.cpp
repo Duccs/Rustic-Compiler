@@ -8,6 +8,7 @@ ScannerClass::ScannerClass(const std::string& inputFileName) {
         std::cerr << "Error opening input file " << inputFileName;
         std::exit(1);
     }
+    mLineNumber = 1;
 }
 
 ScannerClass::~ScannerClass() {
@@ -24,7 +25,11 @@ TokenClass ScannerClass::GetNextToken() {
 
     do
     {
-        char c = mFin.get();
+        //TODO: Try int for capturing c
+        int c = mFin.get();
+        if (c == '\n') {
+            mLineNumber++;
+        }
         lexeme += c;
         currentState = stateMachine.UpdateState(c, previousTokenType);
         if (currentState == START_STATE || currentState == ENDFILE_STATE)
@@ -33,7 +38,7 @@ TokenClass ScannerClass::GetNextToken() {
 
     if (previousTokenType == BAD_TOKEN)
     {
-        std::cerr << "Error. BAD_TOKEN from lexeme " << lexeme;
+        std::cerr << "Error. BAD_TOKEN from lexeme " << lexeme << " at line " << mLineNumber;
         std::exit(1);
     }
 

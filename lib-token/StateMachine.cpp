@@ -16,12 +16,13 @@ StateMachineClass::StateMachineClass() {
     // From START_STATE
     // ----------------
     mLegalMoves[START_STATE][WHITESPACE_CHAR] = START_STATE;
+    mLegalMoves[START_STATE][NEWLINE_CHAR] = START_STATE;
     mLegalMoves[START_STATE][LETTER_CHAR] = IDENTIFIER_STATE;
     mLegalMoves[START_STATE][DIGIT_CHAR] = INTEGER_STATE;
 
     mLegalMoves[START_STATE][LESS_CHAR] = LESS_STATE;
     mLegalMoves[START_STATE][GREATER_CHAR] = GREATER_STATE;
-    mLegalMoves[START_STATE][EQUAL_CHAR] = EQUAL_STATE;
+    mLegalMoves[START_STATE][EQUAL_CHAR] = ASSIGNMENT_STATE;
     mLegalMoves[START_STATE][NOT_CHAR] = NOT_STATE;
 
     mLegalMoves[START_STATE][PLUS_CHAR] = PLUS_STATE;
@@ -46,8 +47,32 @@ StateMachineClass::StateMachineClass() {
     // -------------------
     mLegalMoves[INTEGER_STATE][DIGIT_CHAR] = INTEGER_STATE;
 
+    // Comment States
+    // -----------------
+    // Single line comment
+    mLegalMoves[DIVIDE_STATE][DIVIDE_CHAR] = SINGLE_LINE_COMMENT_STATE;
+    for (int charType = 0; charType < LAST_CHAR; ++charType) {
+        mLegalMoves[SINGLE_LINE_COMMENT_STATE][charType] = SINGLE_LINE_COMMENT_STATE;
+    }
+    mLegalMoves[SINGLE_LINE_COMMENT_STATE][ENDFILE_CHAR] = ENDFILE_STATE;
+    mLegalMoves[SINGLE_LINE_COMMENT_STATE][NEWLINE_CHAR] = START_STATE;
+
+    // Multi-line comment
+    mLegalMoves[DIVIDE_STATE][TIMES_CHAR] = COMMENT_OP_STATE;
+    for (int charType = 0; charType < LAST_CHAR; ++charType) {
+        mLegalMoves[COMMENT_OP_STATE][charType] = COMMENT_OP_STATE;
+    }
+    mLegalMoves[COMMENT_OP_STATE][ENDFILE_CHAR] = ENDFILE_STATE;
+    mLegalMoves[COMMENT_OP_STATE][TIMES_CHAR] = COMMENT_CL_STATE;
+    for (int charType = 0; charType < LAST_CHAR; ++charType) {
+        mLegalMoves[COMMENT_CL_STATE][charType] = COMMENT_OP_STATE;
+    }
+    mLegalMoves[COMMENT_CL_STATE][TIMES_CHAR] = COMMENT_CL_STATE;
+    mLegalMoves[COMMENT_CL_STATE][DIVIDE_CHAR] = START_STATE;
+
     // From OTHER
     // -------------------
+    mLegalMoves[ASSIGNMENT_STATE][EQUAL_CHAR] = EQUAL_STATE;
     mLegalMoves[LESS_STATE][EQUAL_CHAR] = LESSEQUAL_STATE;
     mLegalMoves[LESS_STATE][LESS_CHAR] = INSERTION_STATE;
     mLegalMoves[GREATER_STATE][EQUAL_CHAR] = GREATEREQUAL_STATE;
@@ -85,7 +110,7 @@ StateMachineClass::StateMachineClass() {
     mCorrespondingTokenTypes[START_STATE] = BAD_TOKEN;
 }
 
-MachineState StateMachineClass::UpdateState(char currentCharacter, TokenType &previousTokenType) {
+MachineState StateMachineClass::UpdateState(int currentCharacter, TokenType &previousTokenType) {
     CharacterType charType = BAD_CHAR;
 
     // Determine character type
@@ -93,6 +118,8 @@ MachineState StateMachineClass::UpdateState(char currentCharacter, TokenType &pr
         charType = LETTER_CHAR;
     } else if (isdigit(currentCharacter)) {
         charType = DIGIT_CHAR;
+    } else if (currentCharacter == '\n') {
+        charType = NEWLINE_CHAR;
     } else if (isspace(currentCharacter)) {
         charType = WHITESPACE_CHAR;
     } else if (currentCharacter == '<') {

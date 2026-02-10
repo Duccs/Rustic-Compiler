@@ -5,36 +5,53 @@
 
 enum MachineState{
     START_STATE,                    //0
-    IDENTIFIER_STATE,               //1
-    INTEGER_STATE,                  //2
-    LESS_STATE,                     //3
-    LESSEQUAL_STATE,                //4
-    GREATER_STATE,                  //5
-    GREATEREQUAL_STATE,             //6
-    EQUAL_STATE,                    //7
-    NOT_STATE,                      //8
-    NOTEQUAL_STATE,                 //9
-    INSERTION_STATE,                //10
-    ASSIGNMENT_STATE,               //11
-    PLUS_STATE,                     //12
-    MINUS_STATE,                    //13
-    TIMES_STATE,                    //14
-    DIVIDE_STATE,                   //15
-    SEMICOLON_STATE,                //16
-    LPAREN_STATE,                   //17
-    RPAREN_STATE,                   //18
-    LCURLY_STATE,                   //19
-    RCURLY_STATE,                   //20
+
+    // Comment States
+    SINGLE_LINE_COMMENT_STATE,     // "//"
+    COMMENT_OP_STATE,              // "/*"
+    COMMENT_CL_STATE,              // "/* *"
+
+    // Basic State types
+    IDENTIFIER_STATE,               // "LETTERS"
+    INTEGER_STATE,                  // "1234"
+
+    // Comparison States
+    LESS_STATE,                     // "<"
+    LESSEQUAL_STATE,                // "<="
+    GREATER_STATE,                  // ">"
+    GREATEREQUAL_STATE,             // ">="
+    EQUAL_STATE,                    // "=="
+    NOT_STATE,                      // "!"
+    NOTEQUAL_STATE,                 // "!="
+    INSERTION_STATE,                // "<<"
+    ASSIGNMENT_STATE,               // "="
+
+    // Arithmetic States
+    PLUS_STATE,                     // "+"
+    MINUS_STATE,                    // "-"
+    TIMES_STATE,                    // "*"
+    DIVIDE_STATE,                   // "/"
+
+    // Separator States
+    SEMICOLON_STATE,                // ";"
+    LPAREN_STATE,                   // "("
+    RPAREN_STATE,                   // ")"
+    LCURLY_STATE,                   // "{"
+    RCURLY_STATE,                   // "}"
     
+    // Special States
     CANTMOVE_STATE,
     ENDFILE_STATE,
     LAST_STATE
 };
 
 enum CharacterType{
+    // Basic characters
     LETTER_CHAR,
     DIGIT_CHAR,
     WHITESPACE_CHAR,
+
+    // Comparison characters
     LESS_CHAR,
     LESS_EQUAL_CHAR,
     GREATER_CHAR,
@@ -43,18 +60,24 @@ enum CharacterType{
     NOT_CHAR,
     INSERTION_CHAR,
     ASSIGN_CHAR,
+
+    // Arthmetic characters
     PLUS_CHAR,
     MINUS_CHAR,
     TIMES_CHAR,
     DIVIDE_CHAR,
+
+    // Separators
     SEMICOLON_CHAR,
     LPAREN_CHAR,
     RPAREN_CHAR,
     LCURLY_CHAR,
     RCURLY_CHAR,
 
+    // Special characters
     BAD_CHAR,
     ENDFILE_CHAR,
+    NEWLINE_CHAR,
     LAST_CHAR
 };
 
@@ -71,7 +94,7 @@ class StateMachineClass {
 
     public:
         StateMachineClass();
-        MachineState UpdateState(char currentCharacter, TokenType &previousTokenType);
+        MachineState UpdateState(int currentCharacter, TokenType &previousTokenType);
 };
 
 #endif /* _STATEMACHINE_H */

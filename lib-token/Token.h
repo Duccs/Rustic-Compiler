@@ -2,6 +2,7 @@
 #define _TOKEN_H
 
 #include <string>
+#include <Debug.h>
 
 enum TokenType {
     // Reserved Words:
