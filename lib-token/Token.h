@@ -1,5 +1,5 @@
-#ifndef _TOKEN_H
-#define _TOKEN_H
+#ifndef _TOKEN_H_
+#define _TOKEN_H_
 
 #include <string>
 #include <Debug.h>
@@ -18,7 +18,7 @@ enum TokenType {
     RCURLY_TOKEN,
     // Other Token Types:
     IDENTIFIER_TOKEN, INTEGER_TOKEN,
-    BAD_TOKEN, ENDFILE_TOKEN
+    BAD_TOKEN, ENDFILE_TOKEN, LAST_TOKEN
 };
 
 // IMPORTANT: The list above and the list below MUST be kept in sync.
@@ -31,6 +31,9 @@ const std::string gTokenTypeNames[] = {
     "IDENTIFIER", "INTEGER",
     "BAD", "ENDFILE"
 };
+
+static_assert(sizeof(gTokenTypeNames)/sizeof(gTokenTypeNames[0]) == LAST_TOKEN,
+              "TokenType enum and gTokenTypeNames array are out of sync!");
 
 class TokenClass {
     private:
@@ -53,4 +56,4 @@ class TokenClass {
 
 std::ostream & operator<<(std::ostream & out, const TokenClass & tc);
 
-#endif
+#endif /* _TOKEN_H_ */

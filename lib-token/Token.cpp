@@ -16,8 +16,7 @@ TokenClass::TokenClass(TokenType type, const std::string &lexeme)
     }
 
 std::ostream & operator<<(std::ostream & out, const TokenClass & tc) {
-    out << "Type=" << static_cast<int>(tc.GetTokenType())
-        << " Name=" << tc.GetTokenTypeName()
+    out << " Name=" << tc.GetTokenTypeName()
         << " Lexeme=\"" << tc.GetLexeme() << "\"";
     return out;
 }

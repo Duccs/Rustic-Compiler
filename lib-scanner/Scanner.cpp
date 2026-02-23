@@ -25,7 +25,6 @@ TokenClass ScannerClass::GetNextToken() {
 
     do
     {
-        //TODO: Try int for capturing c
         int c = mFin.get();
         if (c == '\n') {
             mLineNumber++;

@@ -53,13 +53,9 @@ enum CharacterType{
 
     // Comparison characters
     LESS_CHAR,
-    LESS_EQUAL_CHAR,
     GREATER_CHAR,
-    GREATER_EQUAL_CHAR,
     EQUAL_CHAR,
     NOT_CHAR,
-    INSERTION_CHAR,
-    ASSIGN_CHAR,
 
     // Arthmetic characters
     PLUS_CHAR,

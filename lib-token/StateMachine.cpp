@@ -5,6 +5,7 @@ StateMachineClass::StateMachineClass() {
     mcurrentState = START_STATE;
 
     // initialize all the mLegalMoves to CANTMOVE_STATE
+    // ------------------------------------------------
     for (int state = 0; state < LAST_STATE; state++) {
         for (int charType = 0; charType < LAST_CHAR; ++charType) {
             mLegalMoves[state][charType] = CANTMOVE_STATE;
@@ -12,43 +13,42 @@ StateMachineClass::StateMachineClass() {
     }
 
     // Define legal transitions
-
-    // From START_STATE
-    // ----------------
+    // ------------------------
+    // Basic characters
     mLegalMoves[START_STATE][WHITESPACE_CHAR] = START_STATE;
     mLegalMoves[START_STATE][NEWLINE_CHAR] = START_STATE;
     mLegalMoves[START_STATE][LETTER_CHAR] = IDENTIFIER_STATE;
     mLegalMoves[START_STATE][DIGIT_CHAR] = INTEGER_STATE;
 
+    // Comparison characters
     mLegalMoves[START_STATE][LESS_CHAR] = LESS_STATE;
     mLegalMoves[START_STATE][GREATER_CHAR] = GREATER_STATE;
     mLegalMoves[START_STATE][EQUAL_CHAR] = ASSIGNMENT_STATE;
     mLegalMoves[START_STATE][NOT_CHAR] = NOT_STATE;
 
+    // Arithmetic characters
     mLegalMoves[START_STATE][PLUS_CHAR] = PLUS_STATE;
     mLegalMoves[START_STATE][MINUS_CHAR] = MINUS_STATE;
     mLegalMoves[START_STATE][TIMES_CHAR] = TIMES_STATE;
     mLegalMoves[START_STATE][DIVIDE_CHAR] = DIVIDE_STATE;
-    
+
+    // Separators
     mLegalMoves[START_STATE][SEMICOLON_CHAR] = SEMICOLON_STATE;
     mLegalMoves[START_STATE][LPAREN_CHAR] = LPAREN_STATE;
     mLegalMoves[START_STATE][RPAREN_CHAR] = RPAREN_STATE;
     mLegalMoves[START_STATE][LCURLY_CHAR] = LCURLY_STATE;
     mLegalMoves[START_STATE][RCURLY_CHAR] = RCURLY_STATE;
 
+    // EOF
     mLegalMoves[START_STATE][ENDFILE_CHAR] = ENDFILE_STATE;
 
-    // From IDENTIFIER_STATE
-    // ---------------------
+    // Looping transitions
     mLegalMoves[IDENTIFIER_STATE][LETTER_CHAR] = IDENTIFIER_STATE;
     mLegalMoves[IDENTIFIER_STATE][DIGIT_CHAR] = IDENTIFIER_STATE;
-
-    // From INTEGER_STATEs
-    // -------------------
     mLegalMoves[INTEGER_STATE][DIGIT_CHAR] = INTEGER_STATE;
 
     // Comment States
-    // -----------------
+    // --------------
     // Single line comment
     mLegalMoves[DIVIDE_STATE][DIVIDE_CHAR] = SINGLE_LINE_COMMENT_STATE;
     for (int charType = 0; charType < LAST_CHAR; ++charType) {
@@ -70,21 +70,25 @@ StateMachineClass::StateMachineClass() {
     mLegalMoves[COMMENT_CL_STATE][TIMES_CHAR] = COMMENT_CL_STATE;
     mLegalMoves[COMMENT_CL_STATE][DIVIDE_CHAR] = START_STATE;
 
-    // From OTHER
-    // -------------------
+    // Two step transitions
+    // --------------------
     mLegalMoves[ASSIGNMENT_STATE][EQUAL_CHAR] = EQUAL_STATE;
     mLegalMoves[LESS_STATE][EQUAL_CHAR] = LESSEQUAL_STATE;
     mLegalMoves[LESS_STATE][LESS_CHAR] = INSERTION_STATE;
     mLegalMoves[GREATER_STATE][EQUAL_CHAR] = GREATEREQUAL_STATE;
     mLegalMoves[NOT_STATE][EQUAL_CHAR] = NOTEQUAL_STATE;
 
+
+
+
+
+    // Initialize corresponding token types
     for(int i = 0; i < LAST_STATE; i++) {
         mCorrespondingTokenTypes[i] = BAD_TOKEN;
     }
-
-    // Initialize corresponding token types
     mCorrespondingTokenTypes[IDENTIFIER_STATE] = IDENTIFIER_TOKEN;
     mCorrespondingTokenTypes[INTEGER_STATE] = INTEGER_TOKEN;
+    
     mCorrespondingTokenTypes[LESS_STATE] = LESS_TOKEN;
     mCorrespondingTokenTypes[LESSEQUAL_STATE] = LESSEQUAL_TOKEN;
     mCorrespondingTokenTypes[GREATER_STATE] = GREATER_TOKEN;
