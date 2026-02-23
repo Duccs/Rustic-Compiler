@@ -30,6 +30,7 @@ add_subdirectory(lib-debug)
 add_subdirectory(lib-token)
 add_subdirectory(lib-scanner)
 add_subdirectory(lib-symbol)
+add_subdirectory(lib-parse-tree)
 
 # Define programs
 add_subdirectory(src)
