@@ -1,10 +1,8 @@
 # Create the executable
-add_executable(main Main.cpp)
+add_executable(Scanner ScannerTest.cpp)
 
 # Link the library
-target_link_libraries(main PRIVATE 
-    lib-parse-tree
-    lib-symbol
+target_link_libraries(Scanner PRIVATE 
     lib-scanner
 )
 
@@ -16,5 +14,35 @@ add_custom_target(copy_code_txt ALL
     COMMENT "Copying code.txt to binary directory..."
 )
 
-# Make main depend on the copy task
-add_dependencies(main copy_code_txt)
+# Make scanner depend on the copy task
+add_dependencies(Scanner copy_code_txt)
+
+# -----------------------------------------------
+
+# Create the executable
+add_executable(SymbolTable SymbolTableTest.cpp)
+
+# Link the library
+target_link_libraries(SymbolTable PRIVATE 
+    lib-symbol
+)
+
+# -----------------------------------------------
+
+# Create the executable
+add_executable(ParseTree ParseTreeTest.cpp)
+
+# Link the library
+target_link_libraries(ParseTree PRIVATE 
+    lib-parser
+)
+
+# -----------------------------------------------
+
+# Create the executable
+add_executable(Parser ParserTest.cpp)
+
+# Link the library
+target_link_libraries(Parser PRIVATE 
+    lib-parser
+)

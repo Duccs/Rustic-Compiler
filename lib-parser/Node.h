@@ -9,9 +9,9 @@
 class Node;
 class StartNode;
 class ProgramNode;
-class BlockNode;
 class StatementGroupNode;
 class StatementNode;
+class BlockNode;
 class DeclarationStatementNode;
 class AssignmentStatementNode;
 class CoutStatementNode;
@@ -51,14 +51,6 @@ class ProgramNode : public Node {
         ~ProgramNode() override;
 };
 
-class BlockNode : public Node {
-    private:
-        StatementGroupNode* mStatementGroup;
-    public:
-        BlockNode(StatementGroupNode* statementGroup);
-        ~BlockNode() override;
-};
-
 class StatementGroupNode : public Node {
     private:
         std::vector<StatementNode*> mStatements;
@@ -71,6 +63,14 @@ class StatementGroupNode : public Node {
 class StatementNode : public Node {
     public:
         virtual ~StatementNode() = default;
+};
+
+class BlockNode : public StatementNode {
+    private:
+        StatementGroupNode* mStatementGroup;
+    public:
+        BlockNode(StatementGroupNode* statementGroup);
+        ~BlockNode() override;
 };
 
 class DeclarationStatementNode : public StatementNode {

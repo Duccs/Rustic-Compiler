@@ -40,6 +40,7 @@ AssignmentStatementNode::AssignmentStatementNode(IdentifierNode* id, ExpressionN
 AssignmentStatementNode::~AssignmentStatementNode() {
     delete identifier;
     delete expression;
+    
 }
 
 // CoutStatementNode implementation
