@@ -3,6 +3,7 @@
 
 #include "Scanner.h"
 #include "Symbol.h"
+#include "Node.h"
 
 class ParserClass {
     private:
@@ -12,19 +13,24 @@ class ParserClass {
         TokenClass Match(TokenType expectedType);
 
         // Nonterminal methods
-        void Program();
-        void Block();
-        void StatementGroup();
-        void Statement();
-        void Expression();
-        void Relational();
-        void PlusMinus();
-        void TimesDivide();
-        void Factor();
+        ProgramNode* Program();
+        BlockNode* Block();
+        StatementGroupNode* StatementGroup();
+        StatementNode* Statement();
+        DeclarationStatementNode* DeclarationStatment();
+        AssignmentStatementNode* AssignmentStatement();
+        CoutStatementNode* CoutStatement();
+        ExpressionNode* Expression();
+        IntegerNode* Integer();
+        IdentifierNode* Identifier();
+        ExpressionNode* Relational();
+        ExpressionNode* PlusMinus();
+        ExpressionNode* TimesDivide();
+        ExpressionNode* Factor();
 
     public:
         ParserClass(ScannerClass* scanner, SymbolTableClass* symbolTable);
-        void Start();
+        StartNode* Start();
 };
 
 #endif /* _PARSER_H */

@@ -9,7 +9,7 @@ TokenClass ParserClass::Match(TokenType expectedType) {
     TokenClass token = mScanner->GetNextToken();
 
     if (token.GetTokenType() != expectedType) {
-        std::cerr << "Syntax error on line " << mScanner->GetLineNumber() 
+        std::cerr << "While matching token. Syntax error on line " << mScanner->GetLineNumber() 
                   << ": Expected token type " << expectedType 
                   << " but found " << token.GetTokenType() << std::endl;
         exit(1);
@@ -20,179 +20,222 @@ TokenClass ParserClass::Match(TokenType expectedType) {
     return token;
 }
 
-void ParserClass::Start() {
-    Program();
+StartNode* ParserClass::Start() {
+    ProgramNode* pn = Program();
     Match(ENDFILE_TOKEN);
+    StartNode* sn = new StartNode(pn);
+    return sn;
 }
 
-void ParserClass::Program() {
+ProgramNode* ParserClass::Program() {
     Match(VOID_TOKEN);
     Match(MAIN_TOKEN);
     Match(LPAREN_TOKEN);
     Match(RPAREN_TOKEN);
-    Block();
+    BlockNode* bn = Block();
+    ProgramNode* pn = new ProgramNode(bn);
+    return pn;
 }
 
-void ParserClass::Block() {
+BlockNode* ParserClass::Block() {
     Match(LCURLY_TOKEN);
-    StatementGroup();
+    StatementGroupNode* sgn = StatementGroup();
     Match(RCURLY_TOKEN);
+    BlockNode* bn = new BlockNode(sgn);
+    return bn;
 }
 
-void ParserClass::StatementGroup() {
+StatementGroupNode* ParserClass::StatementGroup() {
+    StatementGroupNode* sgn = new StatementGroupNode();
     while(true) {
         TokenType tt = mScanner->PeekNextToken().GetTokenType();
         if(tt == RCURLY_TOKEN)
         {
-            return;
+            return sgn;
         }
         else
         {
-            Statement();
+            StatementNode* sn = Statement();
+            sgn->AddStatement(sn);
         }
     }
 }
 
-void ParserClass::Statement() {
+StatementNode* ParserClass::Statement() {
     TokenType tt = mScanner->PeekNextToken().GetTokenType();
     if(tt == INT_TOKEN)
     {
-        Match(INT_TOKEN);
-        Match(IDENTIFIER_TOKEN);
-        Match(SEMICOLON_TOKEN);
+        return DeclarationStatment();
     }
     else if(tt == IDENTIFIER_TOKEN)
     {
-        Match(IDENTIFIER_TOKEN);
-        Match(ASSIGNMENT_TOKEN);
-        Relational();
-        Match(SEMICOLON_TOKEN);
+        return AssignmentStatement();
     }
     else if(tt == COUT_TOKEN)
     {
-        Match(COUT_TOKEN);
-        Match(INSERTION_TOKEN);
-        Relational();
-        Match(SEMICOLON_TOKEN);
+        return CoutStatement();
     }
     else if (tt == LCURLY_TOKEN)
     {
-        Block();
+        return Block();
     }
     else
     {
-        std::cerr << "Syntax error on line " << mScanner->GetLineNumber() 
+        std::cerr << "While Parsing Statement. Syntax error on line " << mScanner->GetLineNumber() 
                   << ": Unexpected token type " << tt << std::endl;
         exit(1);
     }
     StatementGroup();
 }
 
-void ParserClass::Expression() {
-    Relational();
+DeclarationStatementNode* ParserClass::DeclarationStatment(){
+    Match(INT_TOKEN);
+    IdentifierNode* idn = Identifier();
+    Match(SEMICOLON_TOKEN);
+    DeclarationStatementNode* dsn = new DeclarationStatementNode(idn);
+    return dsn;
+
 }
 
-void ParserClass::Relational() {
-    PlusMinus();
+AssignmentStatementNode* ParserClass::AssignmentStatement(){
+    IdentifierNode* idn = Identifier();
+    Match(ASSIGNMENT_TOKEN);
+    ExpressionNode* en = Relational();
+    Match(SEMICOLON_TOKEN);
+    AssignmentStatementNode* asn = new AssignmentStatementNode(idn, en);
+    return asn;
+}
+
+CoutStatementNode* ParserClass::CoutStatement(){
+    Match(COUT_TOKEN);
+    Match(INSERTION_TOKEN);
+    ExpressionNode* en = Relational();
+    Match(SEMICOLON_TOKEN);
+    CoutStatementNode* csn = new CoutStatementNode(en);
+    return csn;
+}
+
+ExpressionNode* ParserClass::Expression() {
+    ExpressionNode* en = Relational();
+    return en;
+}
+
+IntegerNode* ParserClass::Integer(){
+    TokenClass intToken = Match(INTEGER_TOKEN);
+    int value = std::stoi(intToken.GetLexeme());
+    IntegerNode* intn = new IntegerNode(value);
+    return intn;
+}
+
+IdentifierNode* ParserClass::Identifier(){
+    TokenClass idnToken = Match(IDENTIFIER_TOKEN);
+    IdentifierNode* idn = new IdentifierNode(idnToken.GetLexeme(), mSymbolTable);
+    return idn;
+}
+
+ExpressionNode* ParserClass::Relational() {
+    ExpressionNode* current = PlusMinus();
 
     // Handle the optional tail:
     TokenType tt = mScanner->PeekNextToken().GetTokenType();
     if(tt == LESS_TOKEN)
     {
         Match(tt);
-        PlusMinus();
+        current = new LessNode(current, PlusMinus());
     }
     else if(tt == LESSEQUAL_TOKEN)
     {
         Match(tt);
-        PlusMinus();
+        current = new LessEqualNode(current, PlusMinus());
+
     }
     else if(tt == GREATER_TOKEN)
     {
         Match(tt);
-        PlusMinus();
+        current = new GreaterNode(current, PlusMinus());
     }
     else if(tt == GREATEREQUAL_TOKEN)
     {
         Match(tt);
-        PlusMinus();
+        current = new GreaterEqualNode(current, PlusMinus());
     }
     else if(tt == EQUAL_TOKEN)
     {
         Match(tt);
-        PlusMinus();
+        current = new EqualNode(current, PlusMinus());
     }
     else if(tt == NOTEQUAL_TOKEN)
     {
         Match(tt);
-        PlusMinus();
+        current = new NotEqualNode(current, PlusMinus());
     }
-    return;
+    return current;
 }
 
-void ParserClass::PlusMinus() {
-    TimesDivide();
+ExpressionNode* ParserClass::PlusMinus() {
+    ExpressionNode* current = TimesDivide();
 
     while(true) {
         TokenType tt = mScanner->PeekNextToken().GetTokenType();
         if(tt == PLUS_TOKEN)
         {
             Match(tt);
-            TimesDivide();
+            current = new PlusNode(current, TimesDivide());
         }
         else if(tt == MINUS_TOKEN)
         {
             Match(tt);
-            TimesDivide();
+            current = new MinusNode(current, TimesDivide());
         }
         else
         {
-            return;
+            return current;
         }
     }
 }
 
-void ParserClass::TimesDivide() {
-    Factor();
+ExpressionNode* ParserClass::TimesDivide() {
+    ExpressionNode* current = Factor();
 
     while(true) {
         TokenType tt = mScanner->PeekNextToken().GetTokenType();
         if(tt == TIMES_TOKEN)
         {
             Match(tt);
-            Factor();
+            current = new TimesNode(current, Factor());
         }
         else if(tt == DIVIDE_TOKEN)
         {
             Match(tt);
-            Factor();
+            current = new DivideNode(current, Factor());
         }
         else
         {
-            return;
+            return current;
         }
     }
 }
 
-void ParserClass::Factor() {
+ExpressionNode* ParserClass::Factor() {
     TokenType tt = mScanner->PeekNextToken().GetTokenType();
     if(tt == IDENTIFIER_TOKEN)
     {
-        Match(IDENTIFIER_TOKEN);
+        return Identifier();
     }
     else if(tt == INTEGER_TOKEN)
     {
-        Match(INTEGER_TOKEN);
+        return Integer();
     }
     else if(tt == LPAREN_TOKEN)
     {
         Match(LPAREN_TOKEN);
-        Expression();
+        ExpressionNode* en = Expression();
         Match(RPAREN_TOKEN);
+        return en;
     }
     else
     {
-        std::cerr << "Syntax error on line " << mScanner->GetLineNumber() 
+        std::cerr << "While Parsing Factor. Syntax error on line " << mScanner->GetLineNumber() 
                   << ": Unexpected token type " << tt << std::endl;
         exit(1);
     }
