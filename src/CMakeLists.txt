@@ -56,3 +56,13 @@ add_executable(Instructions InstructionsTest.cpp)
 target_link_libraries(Instructions PRIVATE 
     lib-instructions
 )
+
+# -----------------------------------------------
+
+# Create the executable
+add_executable(MachineCode MachineCodeTest.cpp)
+
+# Link the library
+target_link_libraries(MachineCode PRIVATE 
+    lib-parser
+)

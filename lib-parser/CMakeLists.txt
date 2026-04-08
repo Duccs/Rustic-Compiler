@@ -15,4 +15,5 @@ target_link_libraries(lib-parser PUBLIC
     lib-symbol
     lib-scanner
     lib-debug
+    lib-instructions
 )

@@ -1,16 +1,201 @@
 void main()
 {
+    int testres;
+
+    // Test 1: Basic variable declaration and assignment
+    int a;
+    a = 10;
+    testres = 1;
+    cout << testres;
+
+    // Test 2: Arithmetic - Addition
     int sum;
-    sum = 35 + 400;
+    sum = 5 + 3;
+    if (sum == 8) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 3: Arithmetic - Subtraction
+    int diff;
+    diff = 10 - 4;
+    if (diff == 6) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 4: Arithmetic - Multiplication
+    int prod;
+    prod = 3 * 4;
+    if (prod == 12) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 5: Arithmetic - Division
+    int quotient;
+    quotient = 20 / 4;
+    if (quotient == 5) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 6: Comparison - Less than
+    if (3 < 5) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 7: Comparison - Greater than
+    if (8 > 2) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 8: Comparison - Equal
+    if (7 == 7) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 9: Comparison - Not equal
+    if (5 != 3) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 10: Comparison - Less or equal
+    if (5 <= 5) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 11: Comparison - Greater or equal
+    if (6 >= 4) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 12: Logical AND - both true
+    if (1 && 1) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 13: Logical AND - one false
+    if (1 && 0) {
+        testres = 0;
+    } else {
+        testres = 1;
+    }
+    cout << testres;
+
+    // Test 14: Logical OR - both true
+    if (1 || 1) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 15: Logical OR - one true
+    if (0 || 1) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 16: If-else statement
+    int value;
+    value = 15;
+    if (value > 10) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 17: While loop - counter increment
+    int counter;
+    counter = 0;
+    int loopres;
+    loopres = 0;
+    while (counter < 3) {
+        loopres = loopres + 1;
+        counter = counter + 1;
+    }
+    if (loopres == 3) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 18: While loop with condition
+    int n;
+    n = 5;
+    int total;
+    total = 0;
+    while (n > 0) {
+        total = total + n;
+        n = n - 1;
+    }
+    if (total == 15) {
+        testres = 1;
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
+    // Test 19: Complex expression
     int x;
     int y;
-    x = 1;
-    y = 5;
-    while (x < 10 && y > 0){
-        cout << x;
-        cout << y;
-        x = x + 1;
-        y = y - 1;
+    x = 2;
+    y = 3;
+    int result;
+    result = x + y * 2;
+    if (result == 8) {
+        testres = 1;
+    } else {
+        testres = 0;
     }
-    cout << x;
+    cout << testres;
+
+    // Test 20: Nested if statements
+    int level;
+    level = 10;
+    if (level > 5) {
+        if (level < 15) {
+            testres = 1;
+        } else {
+            testres = 0;
+        }
+    } else {
+        testres = 0;
+    }
+    cout << testres;
+
 }

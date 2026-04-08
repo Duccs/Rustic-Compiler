@@ -2,6 +2,7 @@
 #define _NODE_H_
 
 #include <Symbol.h>
+#include <Instructions.h>
 #include <string>
 #include <vector>
 
@@ -53,6 +54,7 @@ class Node {
     public:
         virtual ~Node() = default;
         virtual void Interpret() = 0;
+        virtual void Code(InstructionsClass &machineCode) = 0;
 };
 
 class StartNode : public Node {
@@ -62,6 +64,7 @@ class StartNode : public Node {
         StartNode(ProgramNode* program);
         ~StartNode() override;
         void Interpret() override;
+        void Code(InstructionsClass &machineCode) override;
 };
 
 class ProgramNode : public Node {
@@ -71,6 +74,7 @@ class ProgramNode : public Node {
         ProgramNode(BlockNode* block);
         ~ProgramNode() override;
         void Interpret() override;
+        void Code(InstructionsClass &machineCode) override;
 };
 
 class StatementGroupNode : public Node {
@@ -81,6 +85,7 @@ class StatementGroupNode : public Node {
         ~StatementGroupNode() override;
         void AddStatement(StatementNode* statement);
         void Interpret() override;
+        void Code(InstructionsClass &machineCode) override;
 };
 
 class StatementNode : public Node {
@@ -95,6 +100,7 @@ class BlockNode : public StatementNode {
         BlockNode(StatementGroupNode* statementGroup);
         ~BlockNode() override;
         void Interpret() override;
+        void Code(InstructionsClass &machineCode) override;
 };
 
 class DeclarationStatementNode : public StatementNode {
@@ -104,6 +110,7 @@ class DeclarationStatementNode : public StatementNode {
         DeclarationStatementNode(IdentifierNode* identifier);
         ~DeclarationStatementNode() override;
         void Interpret() override;
+        void Code(InstructionsClass &machineCode) override;
 };
 
 class AssignmentStatementNode : public StatementNode {
@@ -114,6 +121,7 @@ class AssignmentStatementNode : public StatementNode {
         AssignmentStatementNode(IdentifierNode* identifier, ExpressionNode* expression);
         ~AssignmentStatementNode() override;
         void Interpret() override;
+        void Code(InstructionsClass &machineCode) override;
 };
 
 class CoutStatementNode : public StatementNode {
@@ -123,6 +131,7 @@ class CoutStatementNode : public StatementNode {
         CoutStatementNode(ExpressionNode* expression);
         ~CoutStatementNode() override;
         void Interpret() override;
+        void Code(InstructionsClass &machineCode) override;
 };
 
 class IfStatementNode : public StatementNode {
@@ -134,6 +143,7 @@ class IfStatementNode : public StatementNode {
         IfStatementNode(ExpressionNode* conditional, BlockNode* ifBlock, IfStatementNode* elsenode);
         ~IfStatementNode() override;
         void Interpret() override;
+        void Code(InstructionsClass &machineCode) override;
 };
 
 class WhileStatementNode : public StatementNode {
@@ -144,6 +154,7 @@ class WhileStatementNode : public StatementNode {
         WhileStatementNode(ExpressionNode* conditional, BlockNode* block);
         ~WhileStatementNode() override;
         void Interpret() override;
+        void Code(InstructionsClass &machineCode) override;
 };
 
 class BreakStatementNode : public StatementNode {
@@ -151,6 +162,7 @@ public:
     BreakStatementNode() = default;
     ~BreakStatementNode() override = default;
     void Interpret() override;
+    void Code(InstructionsClass &machineCode) override;
 };
 
 class ContinueStatementNode : public StatementNode {
@@ -158,12 +170,14 @@ public:
     ContinueStatementNode() = default;
     ~ContinueStatementNode() override = default;
     void Interpret() override;
+    void Code(InstructionsClass &machineCode) override;
 };
 
 class ExpressionNode {
     public:
         virtual ~ExpressionNode() = default;
         virtual int Evaluate() const = 0;
+        virtual void CodeEvaluate(InstructionsClass &machineCode) = 0;
 };
 
 class IntegerNode : public ExpressionNode {
@@ -172,6 +186,7 @@ class IntegerNode : public ExpressionNode {
     public:
         IntegerNode(int value);
         int Evaluate() const override;
+        void CodeEvaluate(InstructionsClass &machineCode) override;
 };
 
 class IdentifierNode : public ExpressionNode {
@@ -184,6 +199,7 @@ class IdentifierNode : public ExpressionNode {
         void SetValue(int v);
         int GetIndex() const;
         int Evaluate() const override;
+        void CodeEvaluate(InstructionsClass &machineCode) override;
 };
 
 class BinaryOperatorNode : public ExpressionNode {
@@ -194,78 +210,91 @@ class BinaryOperatorNode : public ExpressionNode {
         BinaryOperatorNode(ExpressionNode* left, ExpressionNode* right);
         virtual ~BinaryOperatorNode();
         virtual int Evaluate() const = 0;
+        virtual void CodeEvaluate(InstructionsClass &machineCode) = 0;
 };
 
 class PlusNode : public BinaryOperatorNode {
     public:
         PlusNode(ExpressionNode* left, ExpressionNode* right);
         int Evaluate() const override;
+        void CodeEvaluate(InstructionsClass &machineCode) override;
 };
 
 class MinusNode : public BinaryOperatorNode {
     public:
         MinusNode(ExpressionNode* left, ExpressionNode* right);
         int Evaluate() const override;
+        void CodeEvaluate(InstructionsClass &machineCode) override;
 };
 
 class TimesNode : public BinaryOperatorNode {
     public:
         TimesNode(ExpressionNode* left, ExpressionNode* right);
         int Evaluate() const override;
+        void CodeEvaluate(InstructionsClass &machineCode) override;
 };
 
 class DivideNode : public BinaryOperatorNode {
     public:
         DivideNode(ExpressionNode* left, ExpressionNode* right);
         int Evaluate() const override;
+        void CodeEvaluate(InstructionsClass &machineCode) override;
 };
 
 class LessNode : public BinaryOperatorNode {
     public:
         LessNode(ExpressionNode* left, ExpressionNode* right);
         int Evaluate() const override;
+        void CodeEvaluate(InstructionsClass &machineCode) override;
 };
 
 class LessEqualNode : public BinaryOperatorNode {
     public:
         LessEqualNode(ExpressionNode* left, ExpressionNode* right);
         int Evaluate() const override;
+        void CodeEvaluate(InstructionsClass &machineCode) override;
 };
 
 class GreaterNode : public BinaryOperatorNode {
     public:
         GreaterNode(ExpressionNode* left, ExpressionNode* right);
         int Evaluate() const override;
+        void CodeEvaluate(InstructionsClass &machineCode) override;
 };
 
 class GreaterEqualNode : public BinaryOperatorNode {
     public:
         GreaterEqualNode(ExpressionNode* left, ExpressionNode* right);
         int Evaluate() const override;
+        void CodeEvaluate(InstructionsClass &machineCode) override;
 };
 
 class EqualNode : public BinaryOperatorNode {
     public:
         EqualNode(ExpressionNode* left, ExpressionNode* right);
         int Evaluate() const override;
+        void CodeEvaluate(InstructionsClass &machineCode) override;
 };
         
 class NotEqualNode : public BinaryOperatorNode {
     public:
         NotEqualNode(ExpressionNode* left, ExpressionNode* right);
         int Evaluate() const override;
+        void CodeEvaluate(InstructionsClass &machineCode) override;
 };
 
 class AndNode : public BinaryOperatorNode {
     public:
         AndNode(ExpressionNode* left, ExpressionNode* right);
         int Evaluate() const override;
+        void CodeEvaluate(InstructionsClass &machineCode) override;
 };
 
 class OrNode : public BinaryOperatorNode {
     public:
         OrNode(ExpressionNode* left, ExpressionNode* right);
         int Evaluate() const override;
+        void CodeEvaluate(InstructionsClass &machineCode) override;
 };
 
 #endif /* _NODE_H_ */
