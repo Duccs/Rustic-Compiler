@@ -75,6 +75,10 @@ StatementNode* ParserClass::Statement() {
     {
         return CoutStatement();
     }
+    else if(tt == PRINT_TOKEN)
+    {
+        return PrintStatement();
+    }
     else if (tt == IF_TOKEN) 
     {
         return IfStatement();
@@ -83,6 +87,10 @@ StatementNode* ParserClass::Statement() {
     {
         return WhileStatement();
     } 
+    else if (tt == DO_TOKEN)
+    {
+        return DoWhileStatement();
+    }
     else if (tt == BREAK_TOKEN) 
     {
         return BreakStatement();
@@ -131,12 +139,22 @@ CoutStatementNode* ParserClass::CoutStatement(){
     return csn;
 }
 
+CoutStatementNode* ParserClass::PrintStatement(){
+    Match(PRINT_TOKEN);
+    Match(LPAREN_TOKEN);
+    ExpressionNode* en = Or();
+    Match(RPAREN_TOKEN);
+    Match(SEMICOLON_TOKEN);
+    CoutStatementNode* csn = new CoutStatementNode(en);
+    return csn;
+}
+
 IfStatementNode* ParserClass::IfStatement() {
     Match(IF_TOKEN);
     Match(LPAREN_TOKEN);
     ExpressionNode* conditional = Or();
     Match(RPAREN_TOKEN);
-    BlockNode* ifBlock = Block();
+    StatementNode* ifBlock = Statement();
     IfStatementNode* elsenode = nullptr;
     TokenType tt = mScanner->PeekNextToken().GetTokenType();
     if (tt == ELSE_TOKEN) {
@@ -146,7 +164,7 @@ IfStatementNode* ParserClass::IfStatement() {
         if (tt == IF_TOKEN) {
             elsenode = IfStatement();
         } else if (tt == LCURLY_TOKEN) {
-            BlockNode* elseBlock = Block();
+            StatementNode* elseBlock = Statement();
             IntegerNode* trueCondition = new IntegerNode(1); // Always true
             elsenode = new IfStatementNode(trueCondition, elseBlock, nullptr);
         }
@@ -160,7 +178,19 @@ WhileStatementNode* ParserClass::WhileStatement() {
     Match(LPAREN_TOKEN);
     ExpressionNode* conditional = Or();
     Match(RPAREN_TOKEN);
-    BlockNode* block = Block();
+    StatementNode* block = Statement();
+    WhileStatementNode* wsn = new WhileStatementNode(conditional, block);
+    return wsn;
+}
+
+WhileStatementNode* ParserClass::DoWhileStatement() {
+    Match(DO_TOKEN);
+    StatementNode* block = Statement();
+    Match(WHILE_TOKEN);
+    Match(LPAREN_TOKEN);
+    ExpressionNode* conditional = Or();
+    Match(RPAREN_TOKEN);
+    Match(SEMICOLON_TOKEN);
     WhileStatementNode* wsn = new WhileStatementNode(conditional, block);
     return wsn;
 }

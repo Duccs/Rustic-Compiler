@@ -22,6 +22,10 @@ TokenClass::TokenClass(TokenType type, const std::string &lexeme)
             mtype = BREAK_TOKEN;
         } else if (lexeme == "continue"){
             mtype = CONTINUE_TOKEN;
+        } else if (lexeme == "do"){
+            mtype = DO_TOKEN;
+        } else if (lexeme == "print"){
+            mtype = PRINT_TOKEN;
         }
     }
 

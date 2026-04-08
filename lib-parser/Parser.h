@@ -20,8 +20,10 @@ class ParserClass {
         DeclarationStatementNode* DeclarationStatment();
         AssignmentStatementNode* AssignmentStatement();
         CoutStatementNode* CoutStatement();
+        CoutStatementNode* PrintStatement();
         IfStatementNode* IfStatement();
         WhileStatementNode* WhileStatement();
+        WhileStatementNode* DoWhileStatement();
         BreakStatementNode* BreakStatement();
         ContinueStatementNode* ContinueStatement();
         ExpressionNode* Expression();

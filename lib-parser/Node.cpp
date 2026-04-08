@@ -110,7 +110,7 @@ void CoutStatementNode::Code(InstructionsClass &machineCode)
 
 
 // IfStatementNode implementation
-IfStatementNode::IfStatementNode(ExpressionNode* cond, BlockNode* blk, IfStatementNode* els) : conditional(cond), ifBlock(blk), elsenode(els) {}
+IfStatementNode::IfStatementNode(ExpressionNode* cond, StatementNode* blk, IfStatementNode* els) : conditional(cond), ifBlock(blk), elsenode(els) {}
 IfStatementNode::~IfStatementNode() {
     delete conditional;
     delete ifBlock;
@@ -134,7 +134,7 @@ void IfStatementNode::Code(InstructionsClass &machineCode)
 }
 
 // WhileStatementNode implementation
-WhileStatementNode::WhileStatementNode(ExpressionNode* cond, BlockNode* blk) : conditional(cond), block(blk) {}
+WhileStatementNode::WhileStatementNode(ExpressionNode* cond, StatementNode* blk) : conditional(cond), block(blk) {}
 WhileStatementNode::~WhileStatementNode() {
     delete conditional;
     delete block;
@@ -169,8 +169,12 @@ void BreakStatementNode::Interpret() {
 }
 void BreakStatementNode::Code(InstructionsClass &machineCode)
 {
-    // MUST BE IMPLEMENTED
-    return; 
+    // unsigned char * callAddress = machineCode.GetAddress();
+    // unsigned char * InsertAddressToSkip = machineCode.SkipIfZeroStack();
+    // // Addresss of the first instruction after the loop
+    // unsigned char * afterLoopAddress = machineCode.GetAddress();
+    // machineCode.SetOffset(InsertAddressToSkip, (int)(afterLoopAddress-callAddress));
+    return;
 }
 // ContinueStatementNode implementation
 void ContinueStatementNode::Interpret() {
@@ -178,7 +182,11 @@ void ContinueStatementNode::Interpret() {
 }
 void ContinueStatementNode::Code(InstructionsClass &machineCode)
 {
-    // MUST BE IMPLEMENTED
+    // unsigned char * callAddress = machineCode.GetAddress();
+    // unsigned char * InsertAddressToJump = machineCode.Jump();
+    // // Addresss of the first instruction before the loop condition
+    // unsigned char * beforeLoopAddress = machineCode.GetAddress();
+    // machineCode.SetOffset(InsertAddressToJump, (int)(beforeLoopAddress-callAddress));
     return; 
 }
 

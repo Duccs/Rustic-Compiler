@@ -137,10 +137,10 @@ class CoutStatementNode : public StatementNode {
 class IfStatementNode : public StatementNode {
     private:
         ExpressionNode* conditional;
-        BlockNode* ifBlock;
+        StatementNode* ifBlock;
         IfStatementNode* elsenode;  // Null if doesn't exist
     public:
-        IfStatementNode(ExpressionNode* conditional, BlockNode* ifBlock, IfStatementNode* elsenode);
+        IfStatementNode(ExpressionNode* conditional, StatementNode* ifBlock, IfStatementNode* elsenode);
         ~IfStatementNode() override;
         void Interpret() override;
         void Code(InstructionsClass &machineCode) override;
@@ -149,9 +149,9 @@ class IfStatementNode : public StatementNode {
 class WhileStatementNode : public StatementNode {
     private:
         ExpressionNode* conditional;
-        BlockNode* block;
+        StatementNode* block;
     public:
-        WhileStatementNode(ExpressionNode* conditional, BlockNode* block);
+        WhileStatementNode(ExpressionNode* conditional, StatementNode* block);
         ~WhileStatementNode() override;
         void Interpret() override;
         void Code(InstructionsClass &machineCode) override;
