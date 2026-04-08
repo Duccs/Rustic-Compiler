@@ -46,3 +46,13 @@ add_executable(Parser ParserTest.cpp)
 target_link_libraries(Parser PRIVATE 
     lib-parser
 )
+
+# -----------------------------------------------
+
+# Create the executable
+add_executable(Instructions InstructionsTest.cpp)
+
+# Link the library
+target_link_libraries(Instructions PRIVATE 
+    lib-instructions
+)

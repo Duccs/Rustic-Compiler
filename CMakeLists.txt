@@ -27,6 +27,7 @@ include_directories("${CMAKE_SOURCE_DIR}/include")
 
 # Define libraries
 add_subdirectory(lib-debug)
+add_subdirectory(lib-instructions)
 add_subdirectory(lib-token)
 add_subdirectory(lib-scanner)
 add_subdirectory(lib-symbol)
