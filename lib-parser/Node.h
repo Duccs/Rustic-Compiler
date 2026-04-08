@@ -15,6 +15,10 @@ class BlockNode;
 class DeclarationStatementNode;
 class AssignmentStatementNode;
 class CoutStatementNode;
+class IfStatementNode;
+class WhileStatementNode;
+class BreakStatementNode;
+class ContinueStatementNode;
 class ExpressionNode;
 class IntegerNode;
 class IdentifierNode;
@@ -29,10 +33,26 @@ class GreaterNode;
 class GreaterEqualNode;
 class EqualNode;
 class NotEqualNode;
+class AndNode;
+class OrNode;
 
+// Control flow:
+class BreakException : public std::exception {
+public:
+    const char* what() const noexcept override { return "break"; }
+};
+
+class ContinueException : public std::exception {
+public:
+    const char* what() const noexcept override { return "continue"; }
+};
+
+
+// Node class hierarchy:
 class Node {
     public:
         virtual ~Node() = default;
+        virtual void Interpret() = 0;
 };
 
 class StartNode : public Node {
@@ -41,6 +61,7 @@ class StartNode : public Node {
     public:
         StartNode(ProgramNode* program);
         ~StartNode() override;
+        void Interpret() override;
 };
 
 class ProgramNode : public Node {
@@ -49,6 +70,7 @@ class ProgramNode : public Node {
     public:
         ProgramNode(BlockNode* block);
         ~ProgramNode() override;
+        void Interpret() override;
 };
 
 class StatementGroupNode : public Node {
@@ -58,6 +80,7 @@ class StatementGroupNode : public Node {
         StatementGroupNode() = default;
         ~StatementGroupNode() override;
         void AddStatement(StatementNode* statement);
+        void Interpret() override;
 };
 
 class StatementNode : public Node {
@@ -71,6 +94,7 @@ class BlockNode : public StatementNode {
     public:
         BlockNode(StatementGroupNode* statementGroup);
         ~BlockNode() override;
+        void Interpret() override;
 };
 
 class DeclarationStatementNode : public StatementNode {
@@ -79,6 +103,7 @@ class DeclarationStatementNode : public StatementNode {
     public:
         DeclarationStatementNode(IdentifierNode* identifier);
         ~DeclarationStatementNode() override;
+        void Interpret() override;
 };
 
 class AssignmentStatementNode : public StatementNode {
@@ -88,6 +113,7 @@ class AssignmentStatementNode : public StatementNode {
     public:
         AssignmentStatementNode(IdentifierNode* identifier, ExpressionNode* expression);
         ~AssignmentStatementNode() override;
+        void Interpret() override;
 };
 
 class CoutStatementNode : public StatementNode {
@@ -96,6 +122,42 @@ class CoutStatementNode : public StatementNode {
     public:
         CoutStatementNode(ExpressionNode* expression);
         ~CoutStatementNode() override;
+        void Interpret() override;
+};
+
+class IfStatementNode : public StatementNode {
+    private:
+        ExpressionNode* conditional;
+        BlockNode* ifBlock;
+        IfStatementNode* elsenode;  // Null if doesn't exist
+    public:
+        IfStatementNode(ExpressionNode* conditional, BlockNode* ifBlock, IfStatementNode* elsenode);
+        ~IfStatementNode() override;
+        void Interpret() override;
+};
+
+class WhileStatementNode : public StatementNode {
+    private:
+        ExpressionNode* conditional;
+        BlockNode* block;
+    public:
+        WhileStatementNode(ExpressionNode* conditional, BlockNode* block);
+        ~WhileStatementNode() override;
+        void Interpret() override;
+};
+
+class BreakStatementNode : public StatementNode {
+public:
+    BreakStatementNode() = default;
+    ~BreakStatementNode() override = default;
+    void Interpret() override;
+};
+
+class ContinueStatementNode : public StatementNode {
+public:
+    ContinueStatementNode() = default;
+    ~ContinueStatementNode() override = default;
+    void Interpret() override;
 };
 
 class ExpressionNode {
@@ -191,6 +253,18 @@ class EqualNode : public BinaryOperatorNode {
 class NotEqualNode : public BinaryOperatorNode {
     public:
         NotEqualNode(ExpressionNode* left, ExpressionNode* right);
+        int Evaluate() const override;
+};
+
+class AndNode : public BinaryOperatorNode {
+    public:
+        AndNode(ExpressionNode* left, ExpressionNode* right);
+        int Evaluate() const override;
+};
+
+class OrNode : public BinaryOperatorNode {
+    public:
+        OrNode(ExpressionNode* left, ExpressionNode* right);
         int Evaluate() const override;
 };
 

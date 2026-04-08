@@ -39,6 +39,12 @@ enum MachineState{
     LCURLY_STATE,                   // "{"
     RCURLY_STATE,                   // "}"
     
+    // Logical Operator States
+    AMPERSAND_STATE,                // "&"
+    AND_STATE,                      // "&&"
+    PIPE_STATE,                     // "|"
+    OR_STATE,                       // "||"
+
     // Special States
     CANTMOVE_STATE,
     ENDFILE_STATE,
@@ -71,6 +77,8 @@ enum CharacterType{
     RCURLY_CHAR,
 
     // Special characters
+    PIPE_CHAR,
+    AMPERSAND_CHAR,
     BAD_CHAR,
     ENDFILE_CHAR,
     NEWLINE_CHAR,

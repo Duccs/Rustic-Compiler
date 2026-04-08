@@ -39,6 +39,10 @@ StateMachineClass::StateMachineClass() {
     mLegalMoves[START_STATE][LCURLY_CHAR] = LCURLY_STATE;
     mLegalMoves[START_STATE][RCURLY_CHAR] = RCURLY_STATE;
 
+    // Logical operator characters
+    mLegalMoves[START_STATE][AMPERSAND_CHAR] = AMPERSAND_STATE;
+    mLegalMoves[START_STATE][PIPE_CHAR] = PIPE_STATE;
+
     // EOF
     mLegalMoves[START_STATE][ENDFILE_CHAR] = ENDFILE_STATE;
 
@@ -77,10 +81,8 @@ StateMachineClass::StateMachineClass() {
     mLegalMoves[LESS_STATE][LESS_CHAR] = INSERTION_STATE;
     mLegalMoves[GREATER_STATE][EQUAL_CHAR] = GREATEREQUAL_STATE;
     mLegalMoves[NOT_STATE][EQUAL_CHAR] = NOTEQUAL_STATE;
-
-
-
-
+    mLegalMoves[AMPERSAND_STATE][AMPERSAND_CHAR] = AND_STATE;
+    mLegalMoves[PIPE_STATE][PIPE_CHAR] = OR_STATE;
 
     // Initialize corresponding token types
     for(int i = 0; i < LAST_STATE; i++) {
@@ -108,6 +110,9 @@ StateMachineClass::StateMachineClass() {
     mCorrespondingTokenTypes[RPAREN_STATE] = RPAREN_TOKEN;
     mCorrespondingTokenTypes[LCURLY_STATE] = LCURLY_TOKEN;
     mCorrespondingTokenTypes[RCURLY_STATE] = RCURLY_TOKEN;
+
+    mCorrespondingTokenTypes[AND_STATE] = AND_TOKEN;
+    mCorrespondingTokenTypes[OR_STATE] = OR_TOKEN;
 
     mCorrespondingTokenTypes[ENDFILE_STATE] = ENDFILE_TOKEN;
     mCorrespondingTokenTypes[CANTMOVE_STATE] = BAD_TOKEN;
@@ -152,6 +157,10 @@ MachineState StateMachineClass::UpdateState(int currentCharacter, TokenType &pre
         charType = LCURLY_CHAR;
     } else if (currentCharacter == '}') {
         charType = RCURLY_CHAR;
+    } else if (currentCharacter == '&') {
+        charType = AMPERSAND_CHAR;
+    } else if (currentCharacter == '|') {
+        charType = PIPE_CHAR;
     } else if (currentCharacter == EOF) {
         charType = ENDFILE_CHAR;
     }

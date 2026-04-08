@@ -12,6 +12,16 @@ TokenClass::TokenClass(TokenType type, const std::string &lexeme)
             mtype = INT_TOKEN;
         } else if (lexeme == "cout"){
             mtype = COUT_TOKEN; 
+        } else if (lexeme == "if"){
+            mtype = IF_TOKEN;
+        } else if (lexeme == "else"){
+            mtype = ELSE_TOKEN;
+        } else if (lexeme == "while"){
+            mtype = WHILE_TOKEN;
+        } else if (lexeme == "break"){
+            mtype = BREAK_TOKEN;
+        } else if (lexeme == "continue"){
+            mtype = CONTINUE_TOKEN;
         }
     }
 

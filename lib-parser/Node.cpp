@@ -5,17 +5,26 @@ StartNode::StartNode(ProgramNode* program) : mProgram(program) {}
 StartNode::~StartNode() {
     delete mProgram;
 }
+void StartNode::Interpret(){
+    mProgram->Interpret();
+}
 
 // ProgramNode implementation
 ProgramNode::ProgramNode(BlockNode* block) : mBlock(block) {}
 ProgramNode::~ProgramNode() {
     delete mBlock;
 }
+void ProgramNode::Interpret(){
+    mBlock->Interpret();
+}
 
 // BlockNode implementation
 BlockNode::BlockNode(StatementGroupNode* statementGroup) : mStatementGroup(statementGroup) {}
 BlockNode::~BlockNode() {
     delete mStatementGroup;
+}
+void BlockNode::Interpret(){
+    mStatementGroup->Interpret();
 }
 
 // StatementGroupNode implementation
@@ -27,11 +36,19 @@ StatementGroupNode::~StatementGroupNode() {
 void StatementGroupNode::AddStatement(StatementNode* statement) {
     mStatements.push_back(statement);
 }
+void StatementGroupNode::Interpret(){
+    for (auto &s: mStatements){
+        s->Interpret();
+    }
+}
 
 // DeclarationStatementNode implementation
 DeclarationStatementNode::DeclarationStatementNode(IdentifierNode* id) : identifier(id) {}
 DeclarationStatementNode::~DeclarationStatementNode() {
     delete identifier;
+}
+void DeclarationStatementNode::Interpret(){
+    identifier->DeclareVariable();
 }
 
 // AssignmentStatementNode implementation
@@ -42,11 +59,61 @@ AssignmentStatementNode::~AssignmentStatementNode() {
     delete expression;
     
 }
+void AssignmentStatementNode::Interpret(){
+    int v = expression->Evaluate();
+    identifier->SetValue(v);
+}
 
 // CoutStatementNode implementation
 CoutStatementNode::CoutStatementNode(ExpressionNode* expr) : expression(expr) {}
 CoutStatementNode::~CoutStatementNode() {
     delete expression;
+}
+void CoutStatementNode::Interpret(){
+    int v = expression->Evaluate();
+    std::cout << v << " " << std::endl;
+}
+
+// IfStatementNode implementation
+IfStatementNode::IfStatementNode(ExpressionNode* cond, BlockNode* blk, IfStatementNode* els) : conditional(cond), ifBlock(blk), elsenode(els) {}
+IfStatementNode::~IfStatementNode() {
+    delete conditional;
+    delete ifBlock;
+    delete elsenode;
+}
+void IfStatementNode::Interpret(){
+    if (conditional->Evaluate()) {
+        ifBlock->Interpret();
+    } else if (elsenode != nullptr) {
+        elsenode->Interpret();
+    }
+}
+
+// WhileStatementNode implementation
+WhileStatementNode::WhileStatementNode(ExpressionNode* cond, BlockNode* blk) : conditional(cond), block(blk) {}
+WhileStatementNode::~WhileStatementNode() {
+    delete conditional;
+    delete block;
+}
+void WhileStatementNode::Interpret(){
+    while (conditional->Evaluate()) {
+        try{
+            block->Interpret();
+        } catch (const ContinueException& e) {
+            continue;
+        } catch (const BreakException& e) {
+            break;
+        }
+    }
+}
+
+// BreakStatementNode implementation
+void BreakStatementNode::Interpret() {
+    throw BreakException();
+}
+// ContinueStatementNode implementation
+void ContinueStatementNode::Interpret() {
+    throw ContinueException();
 }
 
 // IntegerNode implementation
@@ -140,4 +207,16 @@ int EqualNode::Evaluate() const {
 NotEqualNode::NotEqualNode(ExpressionNode* left, ExpressionNode* right) : BinaryOperatorNode(left, right) {}
 int NotEqualNode::Evaluate() const {
     return (mLeftExpr->Evaluate() != mRightExpr->Evaluate()) ? 1 : 0;
+}
+
+// AndNode implementation
+AndNode::AndNode(ExpressionNode* left, ExpressionNode* right) : BinaryOperatorNode(left, right) {}
+int AndNode::Evaluate() const {
+    return (mLeftExpr->Evaluate() && mRightExpr->Evaluate()) ? 1 : 0;
+}
+
+// OrNode implementation
+OrNode::OrNode(ExpressionNode* left, ExpressionNode* right) : BinaryOperatorNode(left, right) {}
+int OrNode::Evaluate() const {
+    return (mLeftExpr->Evaluate() || mRightExpr->Evaluate()) ? 1 : 0;
 }

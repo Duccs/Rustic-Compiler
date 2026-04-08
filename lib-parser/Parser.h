@@ -20,13 +20,20 @@ class ParserClass {
         DeclarationStatementNode* DeclarationStatment();
         AssignmentStatementNode* AssignmentStatement();
         CoutStatementNode* CoutStatement();
+        IfStatementNode* IfStatement();
+        WhileStatementNode* WhileStatement();
+        BreakStatementNode* BreakStatement();
+        ContinueStatementNode* ContinueStatement();
         ExpressionNode* Expression();
         IntegerNode* Integer();
         IdentifierNode* Identifier();
+        ExpressionNode* Or();
+        ExpressionNode* And();
         ExpressionNode* Relational();
         ExpressionNode* PlusMinus();
         ExpressionNode* TimesDivide();
         ExpressionNode* Factor();
+
 
     public:
         ParserClass(ScannerClass* scanner, SymbolTableClass* symbolTable);

@@ -75,10 +75,26 @@ StatementNode* ParserClass::Statement() {
     {
         return CoutStatement();
     }
+    else if (tt == IF_TOKEN) 
+    {
+        return IfStatement();
+    } 
+    else if (tt == WHILE_TOKEN) 
+    {
+        return WhileStatement();
+    } 
+    else if (tt == BREAK_TOKEN) 
+    {
+        return BreakStatement();
+    } 
+    else if (tt == CONTINUE_TOKEN) 
+    {
+        return ContinueStatement();
+    }    
     else if (tt == LCURLY_TOKEN)
     {
         return Block();
-    }
+    } 
     else
     {
         std::cerr << "While Parsing Statement. Syntax error on line " << mScanner->GetLineNumber() 
@@ -100,7 +116,7 @@ DeclarationStatementNode* ParserClass::DeclarationStatment(){
 AssignmentStatementNode* ParserClass::AssignmentStatement(){
     IdentifierNode* idn = Identifier();
     Match(ASSIGNMENT_TOKEN);
-    ExpressionNode* en = Relational();
+    ExpressionNode* en = Or();
     Match(SEMICOLON_TOKEN);
     AssignmentStatementNode* asn = new AssignmentStatementNode(idn, en);
     return asn;
@@ -109,14 +125,60 @@ AssignmentStatementNode* ParserClass::AssignmentStatement(){
 CoutStatementNode* ParserClass::CoutStatement(){
     Match(COUT_TOKEN);
     Match(INSERTION_TOKEN);
-    ExpressionNode* en = Relational();
+    ExpressionNode* en = Or();
     Match(SEMICOLON_TOKEN);
     CoutStatementNode* csn = new CoutStatementNode(en);
     return csn;
 }
 
+IfStatementNode* ParserClass::IfStatement() {
+    Match(IF_TOKEN);
+    Match(LPAREN_TOKEN);
+    ExpressionNode* conditional = Or();
+    Match(RPAREN_TOKEN);
+    BlockNode* ifBlock = Block();
+    IfStatementNode* elsenode = nullptr;
+    TokenType tt = mScanner->PeekNextToken().GetTokenType();
+    if (tt == ELSE_TOKEN) {
+        Match(ELSE_TOKEN);
+
+        tt = mScanner->PeekNextToken().GetTokenType();
+        if (tt == IF_TOKEN) {
+            elsenode = IfStatement();
+        } else if (tt == LCURLY_TOKEN) {
+            BlockNode* elseBlock = Block();
+            IntegerNode* trueCondition = new IntegerNode(1); // Always true
+            elsenode = new IfStatementNode(trueCondition, elseBlock, nullptr);
+        }
+    }
+    IfStatementNode* ifsn = new IfStatementNode(conditional, ifBlock, elsenode);
+    return ifsn;
+}
+
+WhileStatementNode* ParserClass::WhileStatement() {
+    Match(WHILE_TOKEN);
+    Match(LPAREN_TOKEN);
+    ExpressionNode* conditional = Or();
+    Match(RPAREN_TOKEN);
+    BlockNode* block = Block();
+    WhileStatementNode* wsn = new WhileStatementNode(conditional, block);
+    return wsn;
+}
+
+BreakStatementNode* ParserClass::BreakStatement() {
+    Match(BREAK_TOKEN);
+    Match(SEMICOLON_TOKEN);
+    return new BreakStatementNode();
+}
+
+ContinueStatementNode* ParserClass::ContinueStatement() {
+    Match(CONTINUE_TOKEN);
+    Match(SEMICOLON_TOKEN);
+    return new ContinueStatementNode();
+}
+
 ExpressionNode* ParserClass::Expression() {
-    ExpressionNode* en = Relational();
+    ExpressionNode* en = Or();
     return en;
 }
 
@@ -131,6 +193,34 @@ IdentifierNode* ParserClass::Identifier(){
     TokenClass idnToken = Match(IDENTIFIER_TOKEN);
     IdentifierNode* idn = new IdentifierNode(idnToken.GetLexeme(), mSymbolTable);
     return idn;
+}
+
+ExpressionNode* ParserClass::Or() {
+    ExpressionNode* current = And();
+
+    while(true) {
+        TokenType tt = mScanner->PeekNextToken().GetTokenType();
+        if(tt == OR_TOKEN) {
+            Match(tt);
+            current = new OrNode(current, And());
+        } else {
+            return current;
+        }
+    }
+}
+
+ExpressionNode* ParserClass::And() {
+    ExpressionNode* current = Relational();
+
+    while(true) {
+        TokenType tt = mScanner->PeekNextToken().GetTokenType();
+        if(tt == AND_TOKEN) {
+            Match(tt);
+            current = new AndNode(current, Relational());
+        } else {
+            return current;
+        }
+    }
 }
 
 ExpressionNode* ParserClass::Relational() {
