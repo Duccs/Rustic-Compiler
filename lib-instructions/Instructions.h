@@ -10,6 +10,7 @@ public:
     InstructionsClass();
     void PrintAllMachineCodes();
     void WriteSpaceLinux64();
+    void WriteEndlLinux64();
     void PopAndWrite();
     unsigned char *GetAddress();
     unsigned char *SkipIfZeroStack();
@@ -59,6 +60,7 @@ private:
     // Jump to this offset of mCode to start program execution.
     char mMinusString; // Holds '-'
     char mSpaceString; // Holds ' '
+    char mNewLineString; // Holds '\n'
 };
 
 #endif

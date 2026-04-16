@@ -2,19 +2,18 @@ void main()
 {
     int x;
     int y;
-    x = 10;
-    y = 5;
-    print(x + y);
-    print(x / y);
-
-    do
-    {
-        if (x == 5){
-            print(1000);
-        }
-        print(x);
-        x = x - 1;
+    x = 1;
+    y = 10;
+    cout << x << y << endl;
+    cout << endl;
+    while (x < 25){
+        x += 4;
+        cout << x << endl;
     }
-    while(x > 0);
-    cout << x;
+    cout << endl;
+    while (y > 1){
+        y -= 1;
+        cout << y << endl;
+    }
+
 }

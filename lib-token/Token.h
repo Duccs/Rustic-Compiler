@@ -7,7 +7,7 @@
 enum TokenType {
     // Reserved Words:
     VOID_TOKEN, MAIN_TOKEN, INT_TOKEN, COUT_TOKEN, IF_TOKEN, WHILE_TOKEN, ELSE_TOKEN,
-    BREAK_TOKEN, CONTINUE_TOKEN, DO_TOKEN, PRINT_TOKEN,
+    BREAK_TOKEN, CONTINUE_TOKEN, DO_TOKEN, PRINT_TOKEN, ENDL_TOKEN,
     // Logical Operators:
     AND_TOKEN, OR_TOKEN,
     // Relational Operators:
@@ -27,7 +27,7 @@ enum TokenType {
 // IMPORTANT: The list above and the list below MUST be kept in sync.
 const std::string gTokenTypeNames[] = {
     "VOID", "MAIN", "INT", "COUT", "IF", "WHILE", "ELSE",
-    "BREAK", "CONTINUE", "DO", "PRINT",
+    "BREAK", "CONTINUE", "DO", "PRINT", "ENDL",
     "AND", "OR",
     "LESS", "LESSEQUAL", "GREATER", "GREATEREQUAL", "EQUAL",
     "NOTEQUAL",

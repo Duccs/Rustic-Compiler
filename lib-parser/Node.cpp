@@ -93,21 +93,70 @@ void AssignmentStatementNode::Code(InstructionsClass &machineCode)
     machineCode.PopAndStore(index);
 }
 
+// PlusEqualStatementNode implementation
+PlusEqualStatementNode::PlusEqualStatementNode(IdentifierNode* id, ExpressionNode* expr) 
+: AssignmentStatementNode(id, expr) {}
+void PlusEqualStatementNode::Interpret(){
+    int v = expression->Evaluate();
+    int curr = identifier->Evaluate();
+    identifier->SetValue(curr + v);
+}
+void PlusEqualStatementNode::Code(InstructionsClass &machineCode)
+{
+    int index = identifier->GetIndex();
+    machineCode.PushVariable(index);
+    expression->CodeEvaluate(machineCode);
+    machineCode.PopPopAddPush();
+    machineCode.PopAndStore(index);
+}
+
+// MinusEqualStatementNode implementation
+MinusEqualStatementNode::MinusEqualStatementNode(IdentifierNode* id, ExpressionNode* expr) 
+: AssignmentStatementNode(id, expr) {}
+void MinusEqualStatementNode::Interpret(){
+    int v = expression->Evaluate();
+    int curr = identifier->Evaluate();
+    identifier->SetValue(curr - v);
+}
+void MinusEqualStatementNode::Code(InstructionsClass &machineCode)
+{
+    int index = identifier->GetIndex();
+    machineCode.PushVariable(index);
+    expression->CodeEvaluate(machineCode);
+    machineCode.PopPopSubPush();
+    machineCode.PopAndStore(index);
+}
+
 // CoutStatementNode implementation
-CoutStatementNode::CoutStatementNode(ExpressionNode* expr) : expression(expr) {}
 CoutStatementNode::~CoutStatementNode() {
-    delete expression;
+    for (ExpressionNode* expr : expressions) {
+        delete expr;
+    }
+}
+void CoutStatementNode::AddExpression(ExpressionNode* expression) {
+    expressions.push_back(expression);
 }
 void CoutStatementNode::Interpret(){
-    int v = expression->Evaluate();
-    std::cout << v << " " << std::endl;
+    for (ExpressionNode* expression : expressions) {
+        if (expression == nullptr) {
+            std::cout << std::endl;
+            continue;
+        }
+        int v = expression->Evaluate();
+        std::cout << v << " ";
+    }
 }
 void CoutStatementNode::Code(InstructionsClass &machineCode)
 {
+    for (ExpressionNode* expression : expressions) {
+        if (expression == nullptr) {
+            machineCode.WriteEndlLinux64();
+            continue;
+        }
     expression->CodeEvaluate(machineCode);
     machineCode.PopAndWrite();
+    }
 }
-
 
 // IfStatementNode implementation
 IfStatementNode::IfStatementNode(ExpressionNode* cond, StatementNode* blk, IfStatementNode* els) : conditional(cond), ifBlock(blk), elsenode(els) {}

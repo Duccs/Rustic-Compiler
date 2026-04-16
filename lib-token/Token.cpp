@@ -26,6 +26,8 @@ TokenClass::TokenClass(TokenType type, const std::string &lexeme)
             mtype = DO_TOKEN;
         } else if (lexeme == "print"){
             mtype = PRINT_TOKEN;
+        } else if (lexeme == "endl"){
+            mtype = ENDL_TOKEN;
         }
     }
 

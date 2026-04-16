@@ -15,6 +15,8 @@ class StatementNode;
 class BlockNode;
 class DeclarationStatementNode;
 class AssignmentStatementNode;
+class PlusEqualStatementNode;
+class MinusEqualStatementNode;
 class CoutStatementNode;
 class IfStatementNode;
 class WhileStatementNode;
@@ -114,7 +116,7 @@ class DeclarationStatementNode : public StatementNode {
 };
 
 class AssignmentStatementNode : public StatementNode {
-    private:
+    protected:
         IdentifierNode* identifier;
         ExpressionNode* expression;
     public:
@@ -124,12 +126,27 @@ class AssignmentStatementNode : public StatementNode {
         void Code(InstructionsClass &machineCode) override;
 };
 
+class PlusEqualStatementNode : public AssignmentStatementNode {
+    public:
+        PlusEqualStatementNode(IdentifierNode* identifier, ExpressionNode* expression);
+        void Interpret() override;
+        void Code(InstructionsClass &machineCode) override;
+};
+
+class MinusEqualStatementNode : public AssignmentStatementNode {
+    public:
+        MinusEqualStatementNode(IdentifierNode* identifier, ExpressionNode* expression);
+        void Interpret() override;
+        void Code(InstructionsClass &machineCode) override;
+};
+
 class CoutStatementNode : public StatementNode {
     private:
-        ExpressionNode* expression;
+        std::vector<ExpressionNode*> expressions;
     public:
-        CoutStatementNode(ExpressionNode* expression);
+        CoutStatementNode() = default;
         ~CoutStatementNode() override;
+        void AddExpression(ExpressionNode* expression);
         void Interpret() override;
         void Code(InstructionsClass &machineCode) override;
 };

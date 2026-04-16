@@ -123,29 +123,64 @@ DeclarationStatementNode* ParserClass::DeclarationStatment(){
 
 AssignmentStatementNode* ParserClass::AssignmentStatement(){
     IdentifierNode* idn = Identifier();
-    Match(ASSIGNMENT_TOKEN);
-    ExpressionNode* en = Or();
-    Match(SEMICOLON_TOKEN);
-    AssignmentStatementNode* asn = new AssignmentStatementNode(idn, en);
-    return asn;
+    TokenType tt = mScanner->PeekNextToken().GetTokenType();
+    if (tt == ASSIGNMENT_TOKEN) {
+        Match(ASSIGNMENT_TOKEN);
+        ExpressionNode* en = Or();
+        Match(SEMICOLON_TOKEN);
+        AssignmentStatementNode* asn = new AssignmentStatementNode(idn, en);
+        return asn;
+    } else if (tt == PLUS_TOKEN) {
+        Match(PLUS_TOKEN);
+        Match(ASSIGNMENT_TOKEN);
+        ExpressionNode* en = Or();
+        Match(SEMICOLON_TOKEN);
+        PlusEqualStatementNode* peasn = new PlusEqualStatementNode(idn, en);
+        return peasn;
+    } else if (tt == MINUS_TOKEN) {
+        Match(MINUS_TOKEN);
+        Match(ASSIGNMENT_TOKEN);
+        ExpressionNode* en = Or();
+        Match(SEMICOLON_TOKEN);
+        MinusEqualStatementNode* measn = new MinusEqualStatementNode(idn, en);
+        return measn;
+    } else {
+        std::cerr << "While Parsing Assignment Statement. Syntax error on line " << mScanner->GetLineNumber() 
+                  << ": Expected assignment operator but found " << tt << std::endl;
+        exit(1);
+    }
 }
 
 CoutStatementNode* ParserClass::CoutStatement(){
     Match(COUT_TOKEN);
-    Match(INSERTION_TOKEN);
-    ExpressionNode* en = Or();
-    Match(SEMICOLON_TOKEN);
-    CoutStatementNode* csn = new CoutStatementNode(en);
+    CoutStatementNode* csn = new CoutStatementNode();
+    while (true) {
+        Match(INSERTION_TOKEN);
+        TokenType tt = mScanner->PeekNextToken().GetTokenType();
+        if (tt == ENDL_TOKEN) {
+            Match(ENDL_TOKEN);
+            csn->AddExpression(nullptr); // Use nullptr to represent std::endl
+        } else {
+            ExpressionNode* en = Or();
+            csn->AddExpression(en);
+        }
+        tt = mScanner->PeekNextToken().GetTokenType();
+        if (tt == SEMICOLON_TOKEN) {
+            Match(SEMICOLON_TOKEN);
+            break;
+        }
+    }
     return csn;
 }
 
 CoutStatementNode* ParserClass::PrintStatement(){
+    CoutStatementNode* csn = new CoutStatementNode();
     Match(PRINT_TOKEN);
     Match(LPAREN_TOKEN);
     ExpressionNode* en = Or();
+    csn->AddExpression(en);
     Match(RPAREN_TOKEN);
     Match(SEMICOLON_TOKEN);
-    CoutStatementNode* csn = new CoutStatementNode(en);
     return csn;
 }
 
