@@ -13,10 +13,14 @@ class SymbolTableClass {
         };
 
         std::vector<Variable> mVariables;
+        std::vector<size_t> mScopeStarts;
     public:
         SymbolTableClass() = default;
         ~SymbolTableClass() = default;
-        
+
+        void PushScope();
+        void PopScope();
+
         bool Exists(const std::string & s);
 
         void AddEntry(const std::string & s);
@@ -25,7 +29,7 @@ class SymbolTableClass {
         void SetValue(const std::string & s, int v);
 
         int GetIndex(const std::string & s);
-        
+
         size_t GetCount();
 };
 

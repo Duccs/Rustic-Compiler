@@ -28,16 +28,26 @@ void ProgramNode::Code(InstructionsClass &machineCode)
 
 
 // BlockNode implementation
-BlockNode::BlockNode(StatementGroupNode* statementGroup) : mStatementGroup(statementGroup) {}
+BlockNode::BlockNode(StatementGroupNode* statementGroup, SymbolTableClass* symbolTable)
+    : mStatementGroup(statementGroup), mSymbolTable(symbolTable) {}
 BlockNode::~BlockNode() {
     delete mStatementGroup;
 }
 void BlockNode::Interpret(){
-    mStatementGroup->Interpret();
+    mSymbolTable->PushScope();
+    try {
+        mStatementGroup->Interpret();
+    } catch (...) {
+        mSymbolTable->PopScope();
+        throw;
+    }
+    mSymbolTable->PopScope();
 }
 void BlockNode::Code(InstructionsClass &machineCode)
 {
+    mSymbolTable->PushScope();
     mStatementGroup->Code(machineCode);
+    mSymbolTable->PopScope();
 }
 
 // StatementGroupNode implementation

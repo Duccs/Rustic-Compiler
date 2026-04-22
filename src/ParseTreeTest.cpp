@@ -30,7 +30,7 @@ int main() {
         statementGroup->AddStatement(declaration);
         statementGroup->AddStatement(assignment);
 
-        BlockNode* block = new BlockNode(statementGroup);
+        BlockNode* block = new BlockNode(statementGroup, &symbolTable);
         ProgramNode* program = new ProgramNode(block);
         StartNode* start = new StartNode(program);
 
@@ -87,7 +87,7 @@ int main() {
         AssignmentStatementNode* zAssignment = new AssignmentStatementNode(zAssignId, product);
         statementGroup->AddStatement(zAssignment);
 
-        BlockNode* block = new BlockNode(statementGroup);
+        BlockNode* block = new BlockNode(statementGroup, &symbolTable);
         ProgramNode* program = new ProgramNode(block);
         StartNode* start = new StartNode(program);
 
@@ -126,7 +126,7 @@ int main() {
         AssignmentStatementNode* assignment = new AssignmentStatementNode(resultAssign, comparison);
         statementGroup->AddStatement(assignment);
 
-        BlockNode* block = new BlockNode(statementGroup);
+        BlockNode* block = new BlockNode(statementGroup, &symbolTable);
         ProgramNode* program = new ProgramNode(block);
         StartNode* start = new StartNode(program);
 
@@ -178,7 +178,7 @@ int main() {
         AssignmentStatementNode* assignment = new AssignmentStatementNode(xAssign, product);
         statementGroup->AddStatement(assignment);
 
-        BlockNode* block = new BlockNode(statementGroup);
+        BlockNode* block = new BlockNode(statementGroup, &symbolTable);
         ProgramNode* program = new ProgramNode(block);
         StartNode* start = new StartNode(program);
 

@@ -98,8 +98,9 @@ class StatementNode : public Node {
 class BlockNode : public StatementNode {
     private:
         StatementGroupNode* mStatementGroup;
+        SymbolTableClass* mSymbolTable;
     public:
-        BlockNode(StatementGroupNode* statementGroup);
+        BlockNode(StatementGroupNode* statementGroup, SymbolTableClass* symbolTable);
         ~BlockNode() override;
         void Interpret() override;
         void Code(InstructionsClass &machineCode) override;

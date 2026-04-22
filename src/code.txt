@@ -16,4 +16,29 @@ void main()
         cout << y << endl;
     }
 
+    cout << endl << endl;
+
+    int z;
+    int t;
+    z = 1;
+    t = 10;
+
+    {
+        cout << t << endl;
+        int z;
+        z = 2;
+        cout << z << endl;
+    }
+    cout << z << endl << endl;
+
+    {
+        int t;
+        t = 30;
+        cout << t << endl;
+        z = 3;
+        cout << z << endl;
+    }
+    cout << t << endl;
+    cout << z << endl;
+
 }
